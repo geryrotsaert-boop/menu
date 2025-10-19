@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Menu E-MED-CYBER</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #030F32;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .footer-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #030F32;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .menu-window {
+            position: relative;
+            z-index: 20;
+            background: rgba(3, 15, 50, 0.85);
+            border-radius: 20px;
+            padding: 40px;
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            min-height: 500px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        /* Ligne de scan jaune qui reste dans la fenêtre */
+        .scan-line {
+            position: absolute;
+            width: calc(100% - 4px);
+            height: 3px;
+            left: 2px;
+            background: linear-gradient(90deg, transparent, gold, transparent);
+            box-shadow: 0 0 20px gold, 0 0 40px gold;
+            animation: scanMenu 6s linear infinite;
+            z-index: 9999;
+            pointer-events: none;
+            opacity: 0.6;
+            border-radius: 2px;
+        }
+
+        @keyframes scanMenu {
+            0% { top: 0; }
+            100% { top: calc(100% - 3px); }
+        }
+
+        .menu-header {
+            flex-shrink: 0;
+            margin-bottom: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .menu-title {
+            color: #FFD700;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .menu-subtitle {
+            color: #FFEC8B;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        /* Bouton de fermeture */
+        .close-btn {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 215, 0, 0.2);
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            border-radius: 50%;
+            color: #FFD700;
+            font-size: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: rgba(255, 215, 0, 0.8);
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .close-btn:active {
+            transform: scale(0.95);
+        }
+
+        .menu-content {
+            flex: 1;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .menu-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 100%;
+            position: relative;
+            z-index: 25;
+            max-height: 100%;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+
+        /* Scrollbar personnalisée */
+        .menu-buttons::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .menu-buttons::-webkit-scrollbar-track {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+        }
+
+        .menu-buttons::-webkit-scrollbar-thumb {
+            background: rgba(255, 215, 0, 0.5);
+            border-radius: 10px;
+        }
+
+        .menu-buttons::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 215, 0, 0.7);
+        }
+        
+        .footer-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 20px;
+            background: rgba(52, 84, 209, 0.3);
+            color: #FFD700;
+            text-decoration: none;
+            border-radius: 50px;
+            font-size: 15px;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            min-height: 45px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+
+        .footer-btn-text {
+            text-align: center;
+            line-height: 1.1;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .footer-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #FFD700, #FFEC8B, #FFD700, #FFEC8B);
+            border-radius: 52px;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            animation: rotate 2s linear infinite;
+            background-size: 400% 400%;
+        }
+
+        @keyframes rotate {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .footer-btn:hover::before {
+            opacity: 1;
+        }
+
+        .footer-btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.8s ease;
+        }
+
+        .footer-btn:hover::after {
+            left: 100%;
+        }
+
+        .footer-btn:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #FFEC8B 100%);
+            color: #030F32;
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 6px 18px rgba(255, 215, 0, 0.4);
+            letter-spacing: 0.2px;
+        }
+
+        .footer-btn:active {
+            transform: translateY(-1px) scale(0.98);
+            animation: pulse 0.3s ease;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(255, 215, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(255, 215, 0, 0); }
+        }
+
+        .footer-btn .icon {
+            margin-left: 10px;
+            opacity: 0;
+            transition: all 0.4s ease;
+            font-size: 16px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .footer-btn:hover .icon {
+            opacity: 1;
+            animation: bounce 0.6s ease infinite alternate;
+        }
+
+        @keyframes bounce {
+            from { transform: translateX(0); }
+            to { transform: translateX(3px); }
+        }
+
+        /* Styles pour les menus déroulants */
+        .dropdown {
+            position: relative;
+        }
+
+        .submenu {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: rgba(3, 15, 50, 0.98);
+            border-radius: 10px;
+            padding: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.4s ease;
+            z-index: 30;
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 215, 0, 0.4);
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .dropdown.active .submenu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .submenu .footer-btn {
+            background: rgba(52, 84, 209, 0.2);
+            margin-bottom: 4px;
+            font-size: 13px;
+            min-height: 38px;
+            padding: 8px 15px;
+        }
+
+        .submenu .footer-btn:last-child {
+            margin-bottom: 0;
+        }
+
+        .submenu .footer-btn:hover {
+            background: linear-gradient(135deg, #FFD700 0%, #FFEC8B 100%);
+        }
+
+        .main-link-btn {
+            background: rgba(255, 215, 0, 0.2) !important;
+            border: 1px solid rgba(255, 215, 0, 0.5) !important;
+            font-weight: 600 !important;
+        }
+
+        .dropdown-indicator {
+            margin-left: 8px;
+            font-size: 12px;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+        }
+
+        .dropdown.active .dropdown-indicator {
+            transform: rotate(180deg);
+        }
+
+        /* Styles pour le cube 3D */
+        .cube-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 15;
+        }
+
+        :root {
+            --cube-size: 100px;
+            --face-translate: 50px;
+        }
+
+        .scene {
+            width: var(--cube-size);
+            height: var(--cube-size);
+            perspective: 1000px;
+            position: absolute;
+            pointer-events: none;
+            transform-style: preserve-3d;
+        }
+
+        .cube {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotateCube 6s infinite linear;
+            pointer-events: none;
+        }
+
+        .face {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            border: 2px solid #3454D1;
+            background-color: rgba(52, 84, 209, 0.6);
+            margin: 5px;
+            pointer-events: none;
+        }
+
+        .front  { transform: rotateY(0) translateZ(var(--face-translate)); }
+        .back   { transform: rotateY(180deg) translateZ(var(--face-translate)); }
+        .right  { transform: rotateY(90deg) translateZ(var(--face-translate)); }
+        .left   { transform: rotateY(-90deg) translateZ(var(--face-translate)); }
+        .top    { transform: rotateX(90deg) translateZ(var(--face-translate)); }
+        .bottom { transform: rotateX(-90deg) translateZ(var(--face-translate)); }
+
+        .letter {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            color: #FFD700;
+            text-shadow: 0 0 10px #FFD700;
+            white-space: nowrap;
+            pointer-events: none;
+            font-weight: bold;
+        }
+
+        .image {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) translateZ(1px);
+            width: 50px;
+            pointer-events: none;
+        }
+
+        @keyframes rotateCube {
+            0%   { transform: rotateX(0) rotateY(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+
+        /* ===== VERSION MOBILE ===== */
+        @media (max-width: 768px) {
+            .menu-window {
+                padding: 30px 20px;
+                max-width: 400px;
+                min-height: 450px;
+                max-height: 75vh;
+            }
+
+            .menu-title {
+                font-size: 20px;
+            }
+
+            .menu-subtitle {
+                font-size: 13px;
+            }
+
+            .close-btn {
+                width: 35px;
+                height: 35px;
+                font-size: 18px;
+                top: -8px;
+                right: -8px;
+            }
+
+            .menu-buttons {
+                gap: 10px;
+            }
+
+            .footer-btn {
+                padding: 10px 16px;
+                font-size: 14px;
+                min-height: 42px;
+            }
+
+            .submenu .footer-btn {
+                font-size: 12px;
+                min-height: 36px;
+                padding: 7px 12px;
+            }
+
+            :root {
+                --cube-size: 80px;
+                --face-translate: 40px;
+            }
+
+            .letter {
+                font-size: 10px;
+            }
+
+            .image {
+                width: 35px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .menu-window {
+                padding: 25px 15px;
+                max-width: 350px;
+                min-height: 400px;
+                max-height: 70vh;
+            }
+
+            .menu-title {
+                font-size: 18px;
+            }
+
+            .close-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+                top: -6px;
+                right: -6px;
+            }
+
+            .menu-buttons {
+                gap: 8px;
+            }
+
+            .footer-btn {
+                padding: 8px 14px;
+                font-size: 13px;
+                min-height: 40px;
+            }
+
+            :root {
+                --cube-size: 70px;
+                --face-translate: 35px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="footer-container">
+        <div class="menu-window" id="menuWindow">
+            <!-- Ligne de scan jaune -->
+            <div class="scan-line"></div>
+
+            <!-- Cube 3D intégré dans la fenêtre -->
+            <div class="cube-container">
+                <div class="scene">
+                    <div class="cube">
+                        <div class="face front"><div class="letter">E-MED-CYBER</div></div>
+                        <div class="face back"><div class="letter">E-MED-CYBER</div></div>
+                        <div class="face right"><div class="letter">E-MED-CYBER</div></div>
+                        <div class="face left"><div class="letter">E-MED-CYBER</div></div>
+                        <div class="face top"><div class="letter">E-MED-CYBER</div></div>
+                        <div class="face bottom"><div class="letter">E-MED-CYBER</div></div>
+                        <img class="image" src="https://static.wixstatic.com/media/93b4b8_39962835c12a401480b40c8631f929e5~mv2.png" alt="Logo">
+                    </div>
+                </div>
+            </div>
+
+            <!-- En-tête du menu avec bouton de fermeture -->
+            <div class="menu-header">
+                <div class="menu-title">E-MED-CYBER</div>
+                <div class="menu-subtitle">Navigation principale</div>
+                <button class="close-btn" id="closeBtn">×</button>
+            </div>
+
+            <!-- Contenu du menu avec défilement -->
+            <div class="menu-content">
+                <div class="menu-buttons" id="menuButtons">
+                    <!-- Accueil -->
+                    <div class="dropdown">
+                        <a href="https://www.e-med-cyber.fr" class="footer-btn" target="_blank" data-main-link>
+                            <span class="footer-btn-text">Accueil</span>
+                            <span class="dropdown-indicator">▼</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="https://www.e-med-cyber.fr" class="footer-btn main-link-btn" target="_blank">
+                                <span class="footer-btn-text">Accueil</span>
+                                <span class="icon">→</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/actualites-de-la-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Actualités</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/proteus-cybers%C3%A9curity" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Proteus Label</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Entreprises -->
+                    <div class="dropdown">
+                        <a href="https://www.e-med-cyber.fr/services-aux-entreprises" class="footer-btn" target="_blank" data-main-link>
+                            <span class="footer-btn-text">Entreprises</span>
+                            <span class="dropdown-indicator">▼</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="https://www.e-med-cyber.fr/services-aux-entreprises" class="footer-btn main-link-btn" target="_blank">
+                                <span class="footer-btn-text">Entreprises</span>
+                                <span class="icon">→</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/formules-et-tarifs" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Formules et tarifs</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/auto-evaluation-formation" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Auto évaluations + formation</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/politique-rgpd-automatisee" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Politique RGPD automatisée</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/les-bases-de-la-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Les bases de la cybersécurité</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/guide-de-la-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Guide de la cybersécurité</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/formation-collaborateurs" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Formation - collaborateurs</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Particuliers -->
+                    <div class="dropdown">
+                        <a href="https://www.e-med-cyber.fr/services-aux-particuliers" class="footer-btn" target="_blank" data-main-link>
+                            <span class="footer-btn-text">Particuliers</span>
+                            <span class="dropdown-indicator">▼</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="https://www.e-med-cyber.fr/services-aux-particuliers" class="footer-btn main-link-btn" target="_blank">
+                                <span class="footer-btn-text">Particuliers</span>
+                                <span class="icon">→</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/formation-collaborateurs" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Formules et tarifs</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/csp-un-1892" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Audit cybersécurité en ligne</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/assistance-informatique" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Assistance Informatique</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/les-bases-de-la-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Les bases de la cybersécurité</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/guide-de-la-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Guide de la cybersécurité</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/formation-cybersecurite" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Formation cybersécurité</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Nos services gratuits -->
+                    <div class="dropdown">
+                        <a href="https://www.e-med-cyber.fr/nos-services-gratuits" class="footer-btn" target="_blank" data-main-link>
+                            <span class="footer-btn-text">Nos services gratuits</span>
+                            <span class="dropdown-indicator">▼</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="https://www.e-med-cyber.fr/nos-services-gratuits" class="footer-btn main-link-btn" target="_blank">
+                                <span class="footer-btn-text">Nos services gratuits</span>
+                                <span class="icon">→</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/essai-gratuit-evaluation" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Gratuit : Testez-vous</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/trucs-et-astuces-gratuits" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Trucs et Astuces</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/emergency" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Emergency</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/anti-arnaques" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Anti Arnaques</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/anti-ransomware" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Anti Ransomware</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/applications-logiciels-outils" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Logiciels</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Services à réserver -->
+                    <a href="https://www.e-med-cyber.fr/services-a-reserver" class="footer-btn" target="_blank">
+                        <span class="footer-btn-text">Services à réserver</span>
+                        <span class="icon">→</span>
+                    </a>
+
+                    <!-- Blog -->
+                    <a href="https://www.e-med-cyber.fr/blog" class="footer-btn" target="_blank">
+                        <span class="footer-btn-text">Blog</span>
+                        <span class="icon">→</span>
+                    </a>
+
+                    <!-- Boutique -->
+                    <a href="https://www.e-med-cyber.fr/category/all-products" class="footer-btn" target="_blank">
+                        <span class="footer-btn-text">Boutique</span>
+                        <span class="icon">→</span>
+                    </a>
+
+                    <!-- Plus -->
+                    <div class="dropdown">
+                        <a href="#" class="footer-btn" data-main-link>
+                            <span class="footer-btn-text">Plus</span>
+                            <span class="dropdown-indicator">▼</span>
+                        </a>
+                        <div class="submenu">
+                            <a href="https://www.e-med-cyber.fr/foire-aux-questions" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">FaQ</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/plan-du-site" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Plan du site</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/upload" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Nous envoyer un fichier</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/search" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Rechercher</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/partenaires" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">Partenaires</span>
+                            </a>
+                            <a href="https://www.e-med-cyber.fr/qui-sommes-nous" class="footer-btn" target="_blank">
+                                <span class="footer-btn-text">A propos</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Script pour la gestion des menus déroulants
+        document.addEventListener("DOMContentLoaded", function() {
+            const dropdowns = document.querySelectorAll('.dropdown');
+            const menuWindow = document.getElementById('menuWindow');
+            const menuButtons = document.getElementById('menuButtons');
+            const closeBtn = document.getElementById('closeBtn');
+            let activeDropdown = null;
+
+            // Gestion du bouton de fermeture
+            closeBtn.addEventListener('click', function() {
+                // Animation de fermeture
+                menuWindow.style.opacity = '0';
+                menuWindow.style.transform = 'scale(0.8)';
+                
+                setTimeout(() => {
+                    window.open('https://www.e-med-cyber.fr', '_blank');
+                }, 300);
+            });
+
+            dropdowns.forEach(dropdown => {
+                const mainLink = dropdown.querySelector('[data-main-link]');
+                const submenu = dropdown.querySelector('.submenu');
+                
+                mainLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Si le menu est déjà ouvert, on le ferme
+                    if (dropdown.classList.contains('active')) {
+                        closeDropdown(dropdown);
+                    } 
+                    // Sinon, on l'ouvre
+                    else {
+                        // Fermer le menu précédent s'il existe
+                        if (activeDropdown && activeDropdown !== dropdown) {
+                            closeDropdown(activeDropdown);
+                        }
+                        
+                        // Ouvrir le menu actuel
+                        dropdown.classList.add('active');
+                        activeDropdown = dropdown;
+                    }
+                });
+            });
+
+            // Fermer les menus en cliquant à l'extérieur
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dropdown') && activeDropdown) {
+                    closeDropdown(activeDropdown);
+                }
+            });
+
+            function closeDropdown(dropdown) {
+                dropdown.classList.remove('active');
+                activeDropdown = null;
+            }
+
+            // Script pour le cube 3D
+            const scene = document.querySelector(".scene");
+            const cubeSize = 100;
+            
+            let posX = Math.random() * (menuWindow.offsetWidth - cubeSize);
+            let posY = Math.random() * (menuWindow.offsetHeight - cubeSize);
+            
+            let deltaX = (Math.random() - 0.5) * 2;
+            let deltaY = (Math.random() - 0.5) * 2;
+            
+            function moveCube() {
+                posX += deltaX;
+                posY += deltaY;
+                
+                const maxX = menuWindow.offsetWidth - cubeSize;
+                const maxY = menuWindow.offsetHeight - cubeSize;
+                
+                if (posX >= maxX || posX <= 0) {
+                    deltaX = -deltaX;
+                    posX = Math.max(0, Math.min(posX, maxX));
+                }
+                if (posY >= maxY || posY <= 0) {
+                    deltaY = -deltaY;
+                    posY = Math.max(0, Math.min(posY, maxY));
+                }
+                
+                scene.style.transform = `translate(${posX}px, ${posY}px)`;
+                requestAnimationFrame(moveCube);
+            }
+            
+            moveCube();
+            
+            window.addEventListener('resize', function() {
+                const maxX = menuWindow.offsetWidth - cubeSize;
+                const maxY = menuWindow.offsetHeight - cubeSize;
+                posX = Math.min(posX, maxX);
+                posY = Math.min(posY, maxY);
+            });
+        });
+    </script>
+</body>
+</html>
